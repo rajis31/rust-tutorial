@@ -31,12 +31,31 @@ fn main() {
 
 
     // FUNCTIONS
+
+    // Functions signature must specify types 
+    // -> specify the return type
     fn sum(x: i32, y: i32)-> i32{
         return x + y;
     }
 
+    fn sum1(x: f32, y: f32)->f32{
+        return x+y;
+    }
+
     println!("{:?}", sum(1,3));
-    println!("{:?}", sum(1.0,3));
+    println!("{:?}", sum1(1.0,3.0));
+
+
+    // CONTROL FLOW
+    let z = 5; 
+
+    // if z { // rust wont convert Non-Bool type to bool types
+    //     println!("{z} is above 0"); 
+    // }
+
+    if z>=5 {
+        println!("{z} is greater then or equal to 5");
+    }
 
 
 
