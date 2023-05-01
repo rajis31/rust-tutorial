@@ -1,0 +1,1063 @@
+https://doc.rust-lang.org/book/ch03-01-variables-and-mutability.html
+
+#### Variables  
+- Variables are all immutable by default which means its value can't be changed once set 
+- Variables can be set to be mutable 
+- Being immutable makes it easier to track where the bug is in your code. 
+- you can make them mutable by adding "mut" in front of the variable name 
+-  EX:  let mut x: i32 = 5;
+- Constants 
+       - Values never change and cannot  use "mut" 
+       - Can be declared in any scope 
+       - constants may be set only to a constant expression, 
+           not the result of a value that could only be 
+           computed at runtime.
+       - const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
+       - Constants are valid for the entire time a program runs, 
+- Shadowing 
+     - You can declare a new variable with the same name as a previous variable
+     - This is called "shadowing" which means the 1st variable is shadowed by the 2nd 
+     - The 2nd variable overshadows the 1st and taking any uses of the variable itself. 
+     - Example
+        fn main() {
+            let x = 5;
+
+            let x = x + 1; // 6
+
+            {
+                let x = x * 2; // 12
+                println!("The value of x in the inner scope is: {x}"); // 12
+            }
+
+            println!("The value of x is: {x}"); // 6
+        }
+
+    - Shadowing recreates a new variable so you can change the type of it but reuse the same variable 
+      Difference between "mut" and shadowing
+
+- Data Types 
+   -  Rust is a statically typed language
+   - Ex: let guess: u32 = "42".parse().expect("Not a number!"); // must specify :u32
+   - Simple Data Types 
+        - A scalar type represents a single value (floating-point numbers, Booleans, and characters).
+        - Integer  
+            - It is without its fractional component 
+            - i32 is signed vs u32 is unsigned 
+            - i8, i16, i32, i64, i128 (same for u)
+            - Ranges  -(2^(n - 1)) to 2^(n - 1) - 1 inclusive where n = # of bits 
+        - OVERFLOWS 
+              - Rust does something called "Two's Wrapping" when it comes to overflow 
+              - EX:  in u8, 256 is stored as 0, 257 is stored as 1, etc
+        - Floats 
+            - has f32 and f64 types 
+        - Booleans 
+           - can either be true or false 
+           - is only 1 byte 
+           - EX: let f: bool = false; // with explicit type annotation
+        - Char Type 
+          - represented by a single quote 
+          - "char" data type is 4 bytes 
+          - Can represent a wide range of charaters from ascii, chinese, etc 
+    - Compound Data Types 
+        - Tuple 
+            - Can store multiple types of data 
+            - Fixed size 
+            - EX: let tup: (i32, f64, u8) = (500, 6.4, 1);
+            - To get the individual values out of a tuple, we can use pattern 
+              matching to destructure a tuple value.
+            - EX: let (x, y, z) = tup; // Pattern matching 
+            - We can also access a tuple element directly by using a period (.) 
+              followed by the index of the value we want to access. So for example 
+              tup.0 will show 500. 
+        - Arrays 
+           - Fixed Length 
+           - EX1: let a: [i32; 5] = [1, 2, 3, 4, 5];
+           - EX2: let a = [3; 5];
+           - In EX1, declaring an array of size 5 that holds i32 integers 
+           - In EX2, declaring an array of size 5 that repeats 3 5x. 
+           - Arrays are useful when you want your data allocated on the stack rather than the heap 
+           - An array is a single chunk of memory of a known, fixed size.
+           - If the index is greater than or equal to the length, Rust will panic at runtime 
+
+- Functions 
+    - use the "fn" keyword to declare functions 
+    - Rust uses snake case for function names IE in which all letters are 
+      lowercase and underscores separate words. 
+       - EX: another_function 
+    -  Rust doesn’t care where you define your functions, only that 
+       they’re defined somewhere in a scope that can be seen by the called.
+       EX: You can define a function before or after "main" 
+    - Parameters 
+         - AKA arguments that the function signature can take 
+         - You must delcare the paramter type of each argument 
+    - EX: fn print_labeled_measurement(value: i32, unit_label: char) {
+                 println!("The measurement is: {value}{unit_label}");
+             }
+   - Function body is made of up a series of statements OPTIONALLY ending with an expression 
+       - Since Rust is an expression based language it is important to understand 
+         difference between statement and expression.
+
+         Statements  =  instructions that perform some action and do not return a value.
+         Expressions = evaluate to a result
+
+         Statements are things such as declaring variables (don't return a value)
+         Expressions are like calling a function or macro. Also expressions do not 
+            include an ending colon.
+
+         # Example of a function expression (no return value)
+         fn main() {
+            let y = 6;
+        }
+
+        # Example of an expression 
+        fn main() {
+            let y = {
+                let x = 3;
+                x + 1  // Expression due to no semicolon
+            };
+         println!("The value of y is: {y}"); // 4
+        }
+
+        # Return values 
+            - Functions can return values 
+            - Can specify return value using "return" keyword 
+            - Most functions return the last expression implicitly.
+            - Must declare return type using an arrow (->) followed bv return type
+
+            fn five() -> i32 {
+                5
+            }
+
+            fn main() {
+                let x = five();
+
+                println!("The value of x is: {x}");
+            }
+
+
+- Control Flow
+     - IF statements are like any other languages 
+     - Each IF branch is called an "arm" 
+     - Each condition in the IF statement must be of type "bool"
+     - Since IF is an expression, we can use it on the right side of a left 
+             EX: let number = if condition { 5 } else { 6 };
+     - Remember that blocks of code evaluate to the last expression in them, 
+       and numbers by themselves are also expressions.
+    - Each arm of the IF control statement needs to return the same value. 
+      Rust needs to at compile type what the data type a variable is. Hence 
+      the return values of each IF block should be the same. 
+        - EX: let number = if condition { 5 } else { "six" };
+- LOOPS 
+   - Rust offers 3 different ones: "loop", "while", and "for". 
+   - "loop" runs forever till you tell it to stop 
+        EX: fn main() {
+                loop {
+                    println!("again!");
+                }
+            }
+    - Can use keywords "break" to stop a loop and "continue" to skip current 
+      iteration and go to the next 
+    - We can use the "break" keyword in a loop and return the value after since 
+      a loop is an expression.
+    - EX: fn main() {
+            let mut counter = 0;
+
+            let result = loop {
+                counter += 1;
+
+                if counter == 10 {
+                    break counter * 2;
+                }
+            }; // End with semicolon
+
+        println!("The result is {result}");
+    }
+
+    - Can use "loop labels" if you have nested loops and 
+      it makes it easier to identify which loop to break. 
+        - Loop labels have to be in single quotes. 
+        - EX
+            fn main() {
+                let mut count = 0;
+                'counting_up: loop {
+                    println!("count = {count}");
+                    let mut remaining = 10;
+
+                    loop {
+                        println!("remaining = {remaining}");
+                        if remaining == 9 {
+                            break;
+                        }
+                        if count == 2 {
+                            break 'counting_up;
+                        }
+                        remaining -= 1;
+                    }
+
+                    count += 1;
+                }
+                println!("End count = {count}");
+         }
+    - WHILE LOOP 
+        - Similar to "loop" 
+        - In the example below is a while loop. Rust does runtime checks 
+          to perform conditional check of whether the index is within 
+          bounds of the array on every iterations thru the loop. So 
+          if "a" was to change size to have 4 elements, Rust would panic. 
+        - EX: 
+        fn main() {
+             let a = [10, 20, 30, 40, 50];
+             let mut index = 0;
+
+                while index < 5 {
+                    println!("the value is: {}", a[index]);
+
+                    index += 1;
+                }
+            }
+
+    - For loop 
+        - For loops are a safe way to loop through elements
+        - You would not need to rememeber to change any other code if 
+          you change the number of values in an array. 
+        - EX:     
+            fn main() {
+                let a = [10, 20, 30, 40, 50];
+
+                for element in a {
+                    println!("the value is: {element}");
+                }
+            }
+        - You can use "Range" which generates number sequences. 
+        - EX 
+          fn main() {
+            for number in (1..4).rev() {
+                println!("{number}!");
+            }
+            println!("LIFTOFF!!!");
+        }
+
+- OWNERSHIP 
+    -  It enables Rust to make memory safety guarantees without needing a garbage collector, 
+    -  Ownership is a set of rules that govern how a Rust program manages memory.
+    -  Memory is managed through a system of ownership with a set of rules that the compiler checks. 
+       If any of the rules are violated, the program won’t compile.
+
+    - STACK VS HEAP Memory 
+         - STACK is LIFO so its like adding a plate on top of the stack . 
+         - All data stored on a Stack must have a known fixed size. 
+         - Heap is less organized and you request a certain amount of space. 
+           The memory alloicator finds an empty spot on the heap and returns 
+           a pointer which is an address to that location. 
+        - Accessing the heap is slower then accessing data on the stack. 
+        - A processor can do its job better if it works on data that is close to 
+          other data such as on a stack rather then farther away as on a heap 
+
+    - Ownership rules
+        - Each value in Rust has an owner.
+        - There can only be one owner at a time.
+        - When the owner goes out of scope, the value will be dropped.
+    - Variable Scope
+      - A scope is the range within a program for which an item is valid.
+      - EX:
+          {                   // s is not valid here, it’s not yet declared
+            let s = "hello"; // s is valid from this point forward
+                            // do stuff with s
+          }                // this scope is now over, and s is no longer valid
+
+        - When "s" comes into scope it is valid 
+        - It remains valud until it goes out of scope 
+    - String Type 
+        - This is Rust's second string type. 
+        - It mananges data allocated on the heap 
+        - It is able to store an amount of text that is unknown at compile time. 
+        - You can create a "String" from a string literal using "from" function 
+        - EX: let s = String::from("hello");
+        - :: oerator allows us to namespace "from" function under the "String" type 
+        - Why can "String" be mutated but literals cannot? It has to do with how 
+          these 2 types deal with memory 
+        - In order for "String" type to support a mutable piece of text, it means 
+           1. The memory must be requested from the memory allocator at runtime. (Done with String::from)
+           2. We need a way of returning this memory to the allocator 
+               when we’re done with our String.
+           3. To solve #2, memory is automatically returned once the variable that owns it goes out of 
+               scope. Rust will call a function called "drop" at the closing curly bracket to 
+               return the memory for "String"
+        - EX: 
+            let s1 = String::from("hello");
+            let s2 = s1;
+
+            - In this example, s1 holds a pointer to the memory that holds the contents of the string, 
+              a length, and a capacity. This data is stored on the stack. When s1 is assigned to s2, 
+              the "String" data is copied (pointer,length,capacity) that are on the stack and do not 
+              copy what is in the heap.
+            - Problem here is when s1 and s2 go out of scope, the "drop" function os called and try 
+              to free the same memory.  Freeing memory twice is called "double free error" => Memory
+              corruption. 
+            - Rust after line let s2 =s1; will no longer consider s1 valid. So Rust does not need to 
+              free anything with s1 goes out of scope.  This is called a "move". We say s1 was 
+              moved into s2. 
+            - Rust doesn't automatically do deep copying 
+            - To deep copy a String you can use "clone" which means the heap data gets copied too. 
+                    let s1 = String::from("hello");
+                    let s2 = s1.clone();
+
+    - Stack Only Data: Copy 
+        - EX:
+                let x = 5;
+                let y = x;
+                 println!("x = {}, y = {}", x, y);
+            - Here x is still valud and wasn't "moved" into y. 
+            - Why? 
+                1 .Integers have a known size at copmile time
+                2. Stored entirely on stack. 
+                3. No reason to prevent x from being valid after y is created 
+                4. Rust has a special annotation called "Copy" trait which we can 
+                   place on types stored on the stack such as integer. 
+                5. Types that implement "Copy" trait, variables taht use it do not move and are 
+                   trivially copied. 
+                6. Any type that has "Drop" trait implemented, Rust won't let us annotate 
+                   with "Copy"
+                7. Examples implement Copy: Integers, bool, floating types, charavter, Tuples 
+                   (only if it has types that implement Copy)
+    - Ownership and Functions 
+        -  Passing a variable to a function will move or copy, just as assignment does
+        - EX:
+         fn main() {
+            let s = String::from("hello");  // s comes into scope
+
+            takes_ownership(s);             // s's value moves into the function...
+                                            // ... and so is no longer valid here
+
+            let x = 5;                      // x comes into scope
+
+            makes_copy(x);                  // x would move into the function,
+                                            // but i32 is Copy, so it's okay to still
+                                            // use x afterward
+
+            } // Here, x goes out of Scope
+            - If we tried to use s after the call to takes_ownership, 
+              Rust would throw a compile-time error'
+            - Taking ownership and then returning ownership with every function is tedious. 
+            - What if want to let a function use a value but not take onwership?
+                -  Rust has a feature for using a value without transferring ownership, 
+                   called references.
+
+- REFERENCES & BORROWING 
+     1. A "reference" is an address we can follow to access data stored at that address. 
+          - This "data" is owned by some other variable 
+          - A reference is guaranteed to point to a valid value of a particular type for the life 
+            of that reference
+    2. EX. of a reference:
+      fn main() {
+          let s1 = String::from("hello");
+          let len = calculate_length(&s1);
+          println!("The length of '{}' is {}.", s1, len);
+      }
+
+      fn calculate_length(s: &String) -> usize { // s is a reference to a String
+          s.len()
+      } // Here s goes out of scope. Because it doesn't have ownership of what it refers to 
+        // it's not dropped
+
+      Comments 
+      ======================================
+      1. & mean references 
+      2. & allow you to refer to a value without taking ownership of it 
+      3. &s1 syntax lets us create  reference that refers to the value of s1 but does not own it 
+    3. We call creating a reference "borrowing" since you are returning what you are using. 
+    4. Not allowed to modify something we have a reference to.
+    5. A reference's scope starts from where it is introduced and continues through the last time it is used.
+    6. Mutable References (Can be done)
+          fn main() {
+            let mut s = String::from("hello"); // Change s to be mutable
+            change(&mut s);
+          }
+
+          fn change(some_string: &mut String) { // Add &mut in the function signature
+              some_string.push_str(", world");
+          }
+
+        Comments 
+        ===================================
+        1. Restriction - IF you have a mutable reference to a value, you can have no other references
+                         to that value. 
+                  
+                  let mut s = String::from("hello");
+                  let r1 = &mut s;
+                  let r2 = &mut s; // This will cause an error.
+
+                  println!("{}, {}", r1, r2);
+
+                      - Why does Rust do this? It is to prevent "data racing" from happening during 
+                        compile time 
+                      - Data Racing Happens when: 
+
+                            1 .Two or more pointers access the same data at the same time.
+                            2. At least one of the pointers is being used to write to the data.
+                            3. There’s no mechanism being used to synchronize access to the data.
+          2. EX 
+                     let mut s = String::from("hello");
+
+                      let r1 = &s; // no problem
+                      let r2 = &s; // no problem
+                      println!("{} and {}", r1, r2);
+                      // variables r1 and r2 will not be used after this point
+
+                      let r3 = &mut s; // no problem
+                      println!("{}", r3); 
+                      // Works just fine since scope of r1 and r2 end before the scope of r3 comes in 
+    7. Dangling References is a pointer that References a location in memory that may have 
+       been given to someone else. 
+           - Rust guarantees no dangling References
+           - At any given time, you can have either one mutable reference or any number of immutable references.
+           - References must always be valid.
+
+
+- SLICE TYPE 
+      - "Slices" let you "reference" continous sequence of elements in a collection 
+      - "Slices" are references so there is no ownership
+      - EX: Find the length of the first word in a list of words separated by spaces w/o using slicing: 
+          fn first_word(s: &String) -> usize {
+              let bytes = s.as_bytes();  // Array of bytes
+
+              for (i, &item) in bytes.iter().enumerate() { // Returns a tuple due to enumerate() 
+                                                          // Index is the first element of tuple
+                  if item == b' ' {
+                      return i;
+                  }
+              }
+
+          s.len()
+        }
+
+        Comments
+        ====================================================
+        1. Above code is tedious especially if the length of &s changes so it has to keep 
+           being run after the fact to update the length
+        2. String slices help avoid this issue . 
+  
+      - Slices 
+          let s = String::from("hello world");
+          let hello = &s[0..5];
+          let world = &s[6..11]; // Returns world
+
+          let len = s.len();
+          let slice = &s[0..len];
+          let slice = &s[..];
+
+        Comments
+        =========================================
+        1. world is a slice that contains a pointer to the byte at index 6 with length of 5. 
+
+        let slice = &s[3..len];
+        let slice = &s[3..]; 
+
+        Comments
+        =========================================
+        1. &s[3..len] && &s[3..] are equivalent
+        2. You can omit len at the end of it 
+        3. If you just use "..", that is equivalent to the entire 
+           slice of the string 
+
+
+        fn main() {
+            let mut s = String::from("hello world");
+
+            let word = first_word(&s);
+
+            s.clear(); // error!
+
+            println!("the first word is: {}", word);
+
+            // Results in an error since clear() needs a mutable reference. 
+
+        }
+
+
+        - let s = "Hello WOrld"; In this example, s is a &str => pointer. Also reason why 
+          strings are immutable 
+        - Knowing that you can take slices of literanls and "String" types, you can write  
+          your function signature as such:
+               fn first_word(s: &String) -> &str {
+               fn first_word(s: &str) -> &str {
+        - If we have a string slice, we can pass that directly. If we have a String, we can pass a slice of the String or a reference to the String. 
+
+        - You can slice arrays as well as well as other collections 
+             let a     = [1,2,3,4,5];
+             let slice = &a[1..3];
+             assert_eq!(alice, &[2,3]);
+
+- STRUCTS 
+    - A struct AKA structure is a data type that lets you package together and name 
+      multiple related values in a meaningful group. 
+    - Associated functions with a struct are called "methods"
+    - The pieces of a struct can be different types and each are named 
+    - Structs are flexible in that you dont need to rely on order od the data && access the values 
+    - Use the "struct"  + name of the struct + curly brances + names and types of pieces of data (fields)
+    - Ex
+        struct User {
+            active: bool,   
+            username: String,
+            email: String,
+            sign_in_count: u64,
+        }
+
+        let [mut] user1 = User {
+                active: true,
+                username: String::from("someusername123"),
+                email: String::from("someone@example.com"),
+                sign_in_count: 1,
+         };
+
+        Comments
+        =========================================
+        1. Structs are like a general template
+        2. To access a specific value from a struct use dot notation: "user1.email"
+        3. If instance is mutable, you can change the value by using the dot notation on a particular field 
+        4. Entire instance must be mutable and it cannot be certain fields 
+
+        fn build_user(email: String, username: String) -> User {
+                User {
+                    active: true,
+                    username: username,
+                    email: email,
+                    sign_in_count: 1,
+                }
+        }
+
+
+        // Using field init shorthand
+        fn build_user(email: String, username: String) -> User {
+            User {
+                active: true,
+                username,
+                email,
+                sign_in_count: 1,
+            }
+        }
+
+
+        Comments
+        =========================================
+        1. This function returns a User instance with the set parameters 
+        2. You can use "field init shorthand" syntax to rewrite build_user so you dont have to specify property names again IE instead of 
+           writing email:email, we can pass email as a parameter and since it has the same name Rust will take care of the rest.
+
+         // Without syntax update  
+        fn main() {
+             // --snip--
+
+            let user2 = User {
+                active: user1.active,
+                username: user1.username,
+                email: String::from("another@example.com"),
+                sign_in_count: user1.sign_in_count,
+            };
+        }
+
+        // Using .. syntax 
+        fn main() {
+            // --snip--
+
+            let user2 = User {
+                email: String::from("another@example.com"),
+                ..user1 // uses the rest of the values from user1
+            };
+        }
+
+
+        Comments
+        =========================================
+        1. You can create a new instance of a struct that includes most of all the values from anothe instance AKA struct update syntax. 
+        2. You use the .. syntax and this specifies that the reaminings not explicitly set should have the same value 
+           as the fields in the given instance.
+        3. The ..user1 must come last to specifiy that any remaining fields get their values from user1
+        4. The struct update uses = operator like an assignment because Rust is moving the data. 
+        5. Can no longer use user1 as a whole after creating user2 because String in the username field was moved into user2 
+            - Giving user2 new String values for email and username then user1 would still be valid since active && sign_in_count
+              implement the Copy trait. 
+
+    - Tuple Structs 
+           - Tuple structs have a struct name but does not have name associated with their fields. 
+           - It just has the field types 
+           - Useful when you want to make the tuple a different type from other tuples and when each field 
+             as in a regular struct becomes redundant. 
+
+        struct Color(i32, i32, i32);
+        struct Point(i32, i32, i32);
+
+        fn main() {
+            let black = Color(0, 0, 0);
+            let origin = Point(0, 0, 0);
+        }
+
+     Comments
+     =========================================
+     1. black and origin are different types because they are instances of different tuple structs. 
+     2. Each struct you define is its own type even though the fields within the same struct might have the same types 
+
+
+     - Unit Like Structs 
+            - Use can create unit like structs using struct <name>; 
+            - Useful when your trying to create a ttrait but you dont have any data you want to store in the type itself 
+
+    - Printing Structs 
+       - Use this syntax: println!("rect1 is {:?}", rect1); 
+       - Can use either {:#?} or {:?}
+
+
+    - Method Syntax 
+       - In Rust "Methods" are similar to functions IE declared using fn  and a name and can have parameters / return value but they 
+         are defined within the context of a struct. 
+      - The first parameter to a method is always "self"
+
+        #[derive(Debug)]
+        struct Rectangle {
+            width: u32,
+            height: u32,
+        }
+
+        impl Rectangle {
+            fn area(&self) -> u32 {
+                self.width * self.height
+            }
+        }
+
+        fn main() {
+            let rect1 = Rectangle {
+                width: 30,
+                height: 50,
+            };
+
+            println!(
+                "The area of the rectangle is {} square pixels.",
+                rect1.area()
+            );
+        }
+
+        Comments
+        =========================================
+        1. To define a method for Rectangle, you use "impl" block for Rectangle. 
+        2. Everything in the "impl" block for Rectangle tyoe will be associated with Rectangle
+        3. In the method signature &self is used which is short for "self:&self" instead of "rectangle: &Rectangle"
+        4. In the impl block, "self" is an alias for the type that the "impl" block is for , hence must have a parameter 
+           name "self"
+        5. & in front of self indicates that this method borrows the "Self" instance. 
+        6. Methods can take ownership of "self", borrow "self" immutably, or "self" mutably (&mut self)
+        7. Using "impl" is a way to keep methods organized 
+        8. You can have the same method name as a field name since Rust knows which one you are referencing. 
+
+
+        impl Rectangle {
+            fn area(&self) -> u32 {
+                self.width * self.height
+            }
+
+            fn can_hold(&self, other: &Rectangle) -> bool {
+                self.width > other.width && self.height > other.height
+            }
+        }
+
+       Comments
+       =========================================
+       1. This examples shows that methods can take on as many parameters as needed 
+       2. Here the 2nd parameter is an immutable borrow of another Rectangle 
+
+
+       - Associated Functions 
+            - All functions within an "impl" block are called associated functions because they are associated with the type named after the impl 
+            - Can define functions that don't have &self as the first parameters such as String::from if they don't need an instance of that type 
+              to work with 
+            - Associated functions that aren't methods are often used as contructors that will return a new instance of the struct.
+
+            impl Rectangle {
+                fn square(size: u32) -> Self {
+                    Self {
+                        width: size,
+                        height: size,
+                    }
+                 }
+            }
+
+       Comments
+       =========================================
+       1. Self keyword in the return type and in the body of the function are aliases for the type that appears after the "impl" keyword. In this case is Rectangle
+       2. To call this associated function use :: syntax IE let sq = Rectangle::square(3);
+
+       - Each struct is allowed to have multiple "impl" blocks 
+
+- ENUMERATIONS 
+      - Enumerations (enums) allow you to define a type by enumerating its possible "variants"
+      - Suppose we are working with ip addresses. An IP Address can either be v4 or v6 but not both. This can be 
+        represented as an enum below: 
+
+             enum IpAddrKind {
+                    V4,
+                    V6,
+            }
+            let four = IpAddrKind::V4;
+            let six = IpAddrKind::V6;
+
+            fn route(ip_kind: IpAddrKind) {} // Create a function that takes an enum type
+            route(IpAddrKind::V4); // Calling function
+            route(IpAddrKind::V6);
+
+
+           Comments
+           =========================================
+           1. Basic example of ENUMs
+
+
+            -  enum IpAddr {
+                V4(String),
+                V6(String),
+            }
+
+            let home = IpAddr::V4(String::from("127.0.0.1"));
+            let loopback = IpAddr::V6(String::from("::1"));
+
+           Comments
+           =========================================
+           1. The name of each enum variant defined becomes a function that constructs an instance of the enum.
+           2. IpAddr::V4() is a function that takes a String argument and returns IdAddr type
+           3. An advantage of ENUM over STRUCT is that each variant can have different types and associated data. 
+
+        struct Ipv4Addr {
+             // --snip--
+        }
+
+        struct Ipv6Addr {
+            // --snip--
+        }
+
+        enum IpAddr {
+            V4(Ipv4Addr),
+            V6(Ipv6Addr),
+        }
+
+        Comments
+        =========================================
+        1. ENUM variants can accept any type like STRUCTS 
+        2. Here the variants accept structs as the type 
+
+        enum Message {
+            Quit,
+            Move { x: i32, y: i32 },
+            Write(String),
+            ChangeColor(i32, i32, i32),
+        }
+
+        impl Message {
+            fn call(&self) {
+                // method body would be defined here
+            }
+         }
+        let m = Message::Write(String::from("hello"));
+        m.call();
+
+        Comments
+        =========================================
+        1. Quit has no data associated with it at all.
+        2. Move has named fields, like a struct does.
+        3. Write includes a single String.
+        4. ChangeColor includes three i32 values.
+        5. You can use impl just like structs to define messages on ENUMs 
+        
+
+
+    - Option ENUM
+        - OPTION enum is another ENUM defined by the standard library that 
+          lets you define whether a value could be something or nothing.
+        - EX: If you request the 1st item in an emoty list you would get nothing 
+        - Rust does not have a NULL feature 
+        - Problem with NULL values is that if you try to use a null value as a non-null value you 
+          will get an error. 
+        - A NULL is a value that is currently invalid or absent for some reason
+        - Option<T> is defined in Rust as: 
+                enum Option<T> {
+                    None,
+                    Some(T),
+                }
+        - OPTION enum is included in the prelude so you dont have to import it 
+        - You can use Some and None without the Option:: prefix 
+        - <T> is a generic type parameter
+
+
+        let some_number = Some(5);
+        let some_char = Some('e');
+        let absent_number: Option<i32> = None;
+
+        Comments
+        =========================================
+        1. The type of some_numnber is Option<i32> 
+        2. The type of some_char is Option<char> 
+        3. Rust can infer types inside the Some variant 
+        4. absent_number is of type Option<u32> 
+        5. Use None means the same as NULL 
+        6. Option<T> is better then having a NULL type because Option<T> and T (T can by any type) are different 
+           types and the compiler won’t let us use an Option<T> value as if it were definitely a valid value
+
+        let x: i8 = 5;
+        let y: Option<i8> = Some(5);
+        let sum = x + y;
+
+
+        Comments
+        =========================================
+        1. Returns an error because Rust does not understand how to add an i8 to Options<i8> because they are different types 
+        2. Rust will always ensure that a value of type i8 will always have a valid value and proceed withouty having to check for 
+           null before using that value 
+        3. When the compiler comes across an Option<T> type, compiler will make sure you handle any None valyes. That is 
+           you have to convert Option<T> to a T before you can perform T operations with it, 
+        4. You must explicitly opt in by making the type of that value Option<T>
+        5. Everywhere that a value has a type that isn’t an Option<T>, you can safely assume that the value isn’t null.
+        6. In order to use the T from Option<T> you need to have code to handle each variant. 
+        7. https://doc.rust-lang.org/std/option/enum.Option.html to checkout all the methods for Option 
+        8. Can use "match" expression to handle the various variants and run different pieces of code for each variant type 
+
+    - MATCH enum 
+        - MATCH is a construt that allows you to compare a value against a series of patterns and execute code 
+          based on those patterns. 
+        - MATCH has 2 advantages 
+             - 1. Being able to expressive the patterns 
+             - 2. Compiler confirms all possible cases are handled 
+                enum Coin {
+                    Penny,
+                    Nickel,
+                    Dime,
+                    Quarter,
+                }
+
+                fn value_in_cents(coin: Coin) -> u8 {
+                    match coin {
+                        Coin::Penny => 1,
+                        Coin::Nickel => 5,
+                        Coin::Dime => 10,
+                        Coin::Quarter => 25,
+                        Coins::Dollar => {
+                          println!("Lucky penny!");
+                            1
+                        }
+                    }
+                }
+        Comments
+        =========================================
+        1. In the function there is a "MATCH" expression which in this case is the value "coin"
+        2. Similar to an IF condition but with IF condition evaulates to a Boolean type. With match it 
+           can be anything 
+        3. In the "match" expression are called "arms" 
+        4. Each arm is made of up a pattern => code 
+        5. Code associated with each arm is an expression and the resulting value of the expression in the matching arm 
+           is the 
+        6. IF an expression is multiple lines use curly braces. IN this example the Dollar variant match returns 1 
+
+
+        #[derive(Debug)] // so we can inspect the state in a minute
+        enum UsState {
+            Alabama,
+            Alaska,
+            // --snip--
+        }
+
+        enum Coin {
+            Penny,
+            Nickel,
+            Dime,
+            Quarter(UsState),
+        }
+
+        fn value_in_cents(coin: Coin) -> u8 {
+                match coin {
+                    Coin::Penny => 1,
+                    Coin::Nickel => 5,
+                    Coin::Dime => 10,
+                    Coin::Quarter(state) => {
+                        println!("State quarter from {:?}!", state);
+                        25
+                    }
+            }
+        }
+
+        Comments
+        =========================================
+        1. The UseState value is an ENUM matching the state of the quarter 
+        2. In the match expression Coin::Quarter matches, the state variable will bind to the value 
+           of the quarters state. 
+        3. Calling value_in_cents(Coin::Quarter(UsState::Alaska)), "coin" would be Coin::Quarter(UsState::Alaska);
+           Then state will be UseState::Alaska. THus we access the inner state value 
+
+
+     - MATCHING with Option<T> 
+         - Match works the same for Option<T> 
+
+             fn plus_one(x: Option<i32>) -> Option<i32> {
+                match x {
+                    None => None,
+                    Some(i) => Some(i + 1),
+                    other => move_player(other),
+                    _ => reroll(),
+                }
+            }
+
+            let five = Some(5);
+            let six = plus_one(five);
+            let none = plus_one(None);
+         
+        Comments
+        =========================================
+        1. Suppose we want a function that takes an Option<i32> and if there is a value inside add 1 otherwise return None 
+        2. In the example Some(5) matches to Some(i) and creates a new Some value with 6 inside
+        3. Rust wants us to specify all possible cases. If None condition is missing, Rust will throw an error during compile time.
+        4."other" arm is a catchall that will match all other values.  It is specified last otherwise the other arms would not 
+          execute.
+        5. The _ arm is another catchall pattern but in this we don't to use the value in the catch-all pattern. 
+           - Rust does not bind a value to _ 
+
+    - IF LET 
+        - It combines IF and LET in a less verbose way to handle values that match one pattern while igorning the rest. 
+        - EX: 
+                // Suppose we have this
+                let config_max = Some(3u8);
+                    match config_max {
+                        Some(max) => println!("The maximum is configured to be {}", max),
+                        _ => (),
+                    }
+
+                // Transformed INTO
+                let config_max = Some(3u8);
+                    if let Some(max) = config_max {
+                        println!("The maximum is configured to be {}", max);
+                    } else {
+                      Some(max+1);
+                    }
+     Comments
+     =========================================
+       1. IF LET takes a pattern and an expression separated by = sign and works the same as a "match" expression 
+       2. In this example Some(max) and the max bings to the value inside Some. We can then use "max" in the body of IF LET blockk
+       3. IF LET is basically syntax sugar for "match" that runs code when the value matches 1 pattern and ignores all other values 
+       4. You can add on an else expression in IF LET expressions. It is 
+
+
+
+- PACKAGES, CRATES, and MODULES 
+     - Rust has a # of features that allow you to manage your code organisation including which details are public / private and 
+       what names are in scope 
+    - Tools: 
+            Packages: A Cargo feature that lets you build, test, and share crates
+            Crates: A tree of modules that produces a library or executable
+            Modules and use: Let you control the organization, scope, and privacy of paths
+            Paths: A way of naming an item, such as a struct, function, or module.
+
+
+    - CRATE 
+        -  A "crate" is the smallest amount of code that the rust compiler considers at a time 
+        - Whether you run rustc or cargo and pass a single code file the compiler considers that file to 
+          be a craete 
+        - Crates can have modules and modules maybe defined in other files that get compiled with the crate. 
+        - Crates have 2 forms:
+            1. Binary Crates 
+                 - Programs you can compile to an executable
+                 - Must have a function called "main" that defines what happens when the exe. runs 
+            2. Library Crates 
+                - Don't have a "main" function 
+                - Don't compile to exe 
+                - Define functionality intended to be shared with multiple projects 
+                - Most people refer to these Library crates when they say "crate"
+        - Crate Root = This is a source file the compiler starts from. It makes up the root module of your crate 
+        - PACKAGE = Bundle of one or more crates that provides a set of functionality. 
+                - Contains a "Cargo.toml" file that describes how to build the crates 
+                - Cargo is a package that containsa library crate that the binary crate depends on. 
+                - Cargo package also contains a library crate that the binary crate depends on
+                - Other projects can depend on the Cargo library crate to use the same logic the Cargo command-line tool uses
+                - A package can contain as many binary crates as you like, but at most only one library crate
+                - To create a package RUN cargno new new-project 
+                - Cargo follows a convention that src/main.rs is the crate root of a binary crate with the 
+                  same name as the package.
+                - Cargo knows that if the package directory contains src/lib.rs, the package contains a library crate 
+                  with the same name as the package, and src/lib.rs is its crate root. Cargo passes the crate root files to 
+                  rustc to build the library or binary.
+                -  A package can have multiple binary crates by placing files in the src/bin directory: 
+                   each file will be a separate binary crate.
+
+        - Modules
+            - How do modules work?
+            - START FROM THE CRATE ROOT - When compiling a crate the compiler first looks are the root usually 
+              src/lib.js or src/main.js for a binary crate. 
+            - DECLARING MODULES - In the crate root file you can declare new modules for example you want a garden 
+              module you write "mod garden;". The compiler will look for the module's code in these places:
+                    1. Inline, within curly brackets that replace the semicolon following mod garden
+                    2. In the file src/garden.rs
+                    3. In the file src/garden/mod.rs
+
+            - DECLARING SUBMODULES - : In any file other than the crate root, you can declare submodules. 
+                For example, you might declare mod vegetables; in src/garden.rs. The compiler will look for the 
+                submodule’s code within the directory named for the parent module in these places:
+                  1. Inline directly following mod vegtables; with curly brances instead of a semicolon
+                  2. In the file src/garden/vegetables.rs
+                  3. In the file src/garden/vegetables/mod.rs
+
+            - PATHS TO CDE IN MODULES - You can reefer to a module from anywhere else in the same crate. IE Asparagus Type 
+              is found at crate::garden::vegetables::Asparagus 
+            - PRIVATE VS PUBLIC - Code within a module is private. To make items within a module public use "pub" before 
+              their declarations
+            - USE KEYWORD - In any scope "use" keyword to create shortcuts to items to reduce repitition of long paths. 
+              EX:  use crate::garden::vegetables::Asparagus; and from here only need to write Asparagus to made use 
+                   of this type in the scope 
+STOPPED AT 7.2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
