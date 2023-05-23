@@ -28,6 +28,10 @@ fn main() {
     let x:i32 = x + 1; 
     println!("{}", x);
 
+    // STRINGS 
+    let s1 = String::from("This is war");
+    println!("{:?}", s1);
+
 
 
     // FUNCTIONS
@@ -40,6 +44,10 @@ fn main() {
 
     fn sum1(x: f32, y: f32)->f32{
         return x+y;
+    }
+
+      fn sum2(x: f32, y: f32)->f32{
+         x + y
     }
 
     println!("{:?}", sum(1,3));
