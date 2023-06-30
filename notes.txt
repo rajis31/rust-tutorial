@@ -493,7 +493,7 @@ https://doc.rust-lang.org/book/ch03-01-variables-and-mutability.html
       multiple related values in a meaningful group. 
     - Associated functions with a struct are called "methods"
     - The pieces of a struct can be different types and each are named 
-    - Structs are flexible in that you dont need to rely on order od the data && access the values 
+    - Structs are flexible in that you dont need to rely on order of the data && access the values 
     - Use the "struct"  + name of the struct + curly brances + names and types of pieces of data (fields)
     - Ex
         struct User {
